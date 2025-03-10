@@ -9,7 +9,7 @@ public class PlayerController : MonoBehaviour
     private Vector2 curMovementInput;
     public float jumpPower;
     public LayerMask groundLayerMask;
-    public float superJumpPower;
+    
 
     [Header("Look")]
     public Transform cameraContainer;
