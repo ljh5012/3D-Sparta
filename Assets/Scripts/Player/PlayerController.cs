@@ -9,6 +9,7 @@ public class PlayerController : MonoBehaviour
     private Vector2 curMovementInput;
     public float jumpPower;
     public LayerMask groundLayerMask;
+    public float superJumpPower;
 
     [Header("Look")]
     public Transform cameraContainer;
@@ -19,8 +20,10 @@ public class PlayerController : MonoBehaviour
 
     private Vector2 mouseDelta;
 
-    [HideInInspector]
     public bool canLook = true;
+    public Action inventory;
+
+    
 
     private Rigidbody rigidbody;
 
@@ -37,6 +40,7 @@ public class PlayerController : MonoBehaviour
     private void FixedUpdate()
     {
         Move();
+        Debug.DrawRay((transform.position + (transform.forward * 0.2f) + transform.up * 0.01f), Vector3.down * 0.1f, Color.red);
     }
 
     private void LateUpdate()
@@ -74,6 +78,14 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    public void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("JumpBox"))
+        {
+            Debug.Log("JumpBox¿¡ ´ê¾ÒÀ½!");
+        }
+    }
+
     private void Move()
     {
         Vector3 dir = transform.forward * curMovementInput.y + transform.right * curMovementInput.x;
@@ -104,10 +116,10 @@ public class PlayerController : MonoBehaviour
     {
         Ray[] rays = new Ray[]
         {
-            new Ray(transform.position + (transform.forward * 0.2f) + (transform.up * 0.1f), Vector3.down),
-            new Ray(transform.position + (-transform.forward * 0.2f) + (transform.up * 0.1f), Vector3.down),
-            new Ray(transform.position + (transform.right * 0.2f) + (transform.up * 0.1f), Vector3.down),
-            new Ray(transform.position + (-transform.right * 0.2f) + (transform.up * 0.1f), Vector3.down),
+            new Ray(transform.position + (transform.forward * 0.2f) + (transform.up * 0.01f), Vector3.down),
+            new Ray(transform.position + (-transform.forward * 0.2f) + (transform.up * 0.01f), Vector3.down),
+            new Ray(transform.position + (transform.right * 0.2f) + (transform.up * 0.01f), Vector3.down),
+            new Ray(transform.position + (-transform.right * 0.2f) + (transform.up * 0.01f), Vector3.down),
         };
 
         for(int i = 0; i < rays.Length; i++)
@@ -119,5 +131,21 @@ public class PlayerController : MonoBehaviour
         }
 
         return false;
+    }
+
+    public void OnInventory(InputAction.CallbackContext callbackContext)
+    {
+        if (callbackContext.phase == InputActionPhase.Started)
+        {
+            inventory.Invoke();
+            ToggleCursor();
+        }
+    }
+
+    void ToggleCursor()
+    {
+        bool toggle = Cursor.lockState == CursorLockMode.Locked;
+        Cursor.lockState = toggle ? CursorLockMode.None : CursorLockMode.Locked;
+        canLook = !toggle;
     }
 }
