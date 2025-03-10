@@ -82,7 +82,8 @@ public class PlayerController : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("JumpBox"))
         {
-            Debug.Log("JumpBox¿¡ ´ê¾ÒÀ½!");
+            //Debug.Log("JumpBox¿¡ ´ê¾ÒÀ½!");
+            rigidbody.AddForce(Vector3.up * 200f, ForceMode.Impulse);
         }
     }
 
