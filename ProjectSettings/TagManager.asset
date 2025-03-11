@@ -5,6 +5,8 @@ TagManager:
   serializedVersion: 2
   tags:
   - JumpBox
+  - RemoveBox
+  - Mushroom
   layers:
   - Default
   - TransparentFX

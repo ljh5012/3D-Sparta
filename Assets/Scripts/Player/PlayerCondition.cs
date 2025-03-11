@@ -26,6 +26,8 @@ public class PlayerCondition : MonoBehaviour
         {
             Die();
         }
+
+        
     }
 
     public void Heal(float amount)

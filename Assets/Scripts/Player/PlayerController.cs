@@ -1,11 +1,15 @@
 using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.EnhancedTouch;
+
 
 public class PlayerController : MonoBehaviour
 {
     [Header("Movement")]
     public float moveSpeed;
+    public float defaultMoveSpeed;
     private Vector2 curMovementInput;
     public float jumpPower;
     public LayerMask groundLayerMask;
@@ -30,6 +34,7 @@ public class PlayerController : MonoBehaviour
     private void Awake()
     {
         rigidbody = GetComponent<Rigidbody>();
+        
     }
 
     void Start()
@@ -40,7 +45,7 @@ public class PlayerController : MonoBehaviour
     private void FixedUpdate()
     {
         Move();
-        Debug.DrawRay((transform.position + (transform.forward * 0.2f) + transform.up * 0.01f), Vector3.down * 0.1f, Color.red);
+        //Debug.DrawRay((transform.position + (transform.forward * 0.2f) + transform.up * 0.01f), Vector3.down * 0.1f, Color.red);
     }
 
     private void LateUpdate()
@@ -75,6 +80,7 @@ public class PlayerController : MonoBehaviour
         {
             
             rigidbody.AddForce(Vector2.up * jumpPower, ForceMode.Impulse);
+            
         }
     }
 
@@ -85,7 +91,32 @@ public class PlayerController : MonoBehaviour
             //Debug.Log("JumpBox에 닿았음!");
             rigidbody.AddForce(Vector3.up * 200f, ForceMode.Impulse);
         }
+
+        if (collision.gameObject.CompareTag("RemoveBox"))
+        {
+            Destroy(collision.gameObject, 1f);
+        } 
+        
+        if (collision.gameObject.CompareTag("Mushroom"))
+        {
+            Debug.Log("스피드 업!");
+            StartCoroutine(BoostSpeed(5f, 5f));
+            Destroy(collision.gameObject);
+        }
     }
+
+    private IEnumerator BoostSpeed(float duration, float speedIncrease)
+    {
+        moveSpeed += speedIncrease;
+        
+
+        yield return new WaitForSeconds(duration);
+
+        moveSpeed = defaultMoveSpeed;
+        
+    }
+
+
 
     private void Move()
     {
